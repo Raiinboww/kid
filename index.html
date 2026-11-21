@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>우리 아기 출산 준비 리스트</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --surface-soft: #F7F3EC;
+      --border: #EAE2D6;
+      --text: #2F2A25;
+      --text-muted: #7C7267;
+      --accent: #D97D54;
+      --accent-soft: #FCEEE7;
+      --done: #4E8A75;
+      --done-soft: #E8F3EE;
+      --danger: #D65A5A;
+      --danger-soft: #FDECEC;
+      --shadow: 0 4px 16px rgba(47, 42, 37, 0.06);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 96px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    /* Header */
+    .header-card {
+      background: linear-gradient(135deg, #FFF9F2 0%, #F7EFE4 100%);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title-area h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .dday-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .role-toggle {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px;
+      font-size: 0.78rem;
+    }
+
+    .role-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+
+    .role-btn.active {
+      background: var(--text);
+      color: #fff;
+    }
+
+    .sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.1s, border-color 0.15s;
+    }
+
+    .sync-pill:hover {
+      border-color: var(--accent);
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #B8AEA2;
+    }
+
+    .sync-dot.connected {
+      background: #2EB872;
+      box-shadow: 0 0 0 3px rgba(46, 184, 114, 0.2);
+    }
+
+    .sync-dot.syncing {
+      background: #E8A838;
+      animation: pulse 1s infinite;
+    }
+
+    .sync-dot.error {
+      background: var(--danger);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    /* Progress */
+    .progress-wrap {
+      margin-top: 16px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+
+    .progress-percent {
+      font-weight: 700;
+      color: var(--done);
+      font-size: 0.95rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(47, 42, 37, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #68A890, #4E8A75);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(234, 226, 214, 0.8);
+      border-radius: 12px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .stat-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .stat-val.todo { color: var(--accent); }
+    .stat-val.done { color: var(--done); }
+
+    /* Quick Add Bar */
+    .add-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+    }
+
+    .quick-add-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .quick-add-form input[type="text"] {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.94rem;
+      font-family: inherit;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .quick-add-form input[type="text"]:focus {
+      border-color: var(--accent);
+      background: #fff;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: var(--surface-soft); color: var(--text); border: 1px solid var(--border); }
+    .btn-done { background: var(--done); color: #fff; }
+    .btn-danger { background: var(--danger-soft); color: var(--danger); }
+    .btn-sm { padding: 6px 11px; font-size: 0.8rem; border-radius: 9px; }
+
+    .quick-options {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .quick-options select {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .quick-options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Controls / Filters */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+    }
+
+    .search-input:focus { border-color: var(--accent); }
+
+    .pill-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .pill-row::-webkit-scrollbar { display: none; }
+
+    .pill {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .pill.active {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+    }
+
+    /* Sections */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 18px 2px 10px;
+    }
+
+    .section-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .count-badge {
+      font-size: 0.76rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .count-badge.todo { background: var(--accent-soft); color: var(--accent); }
+    .count-badge.done { background: var(--done-soft); color: var(--done); }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    }
+
+    .item-card:hover {
+      border-color: #D7CBB9;
+    }
+
+    .item-card.is-done {
+      background: #FAFBF9;
+      border-color: #DDE8E2;
+    }
+
+    .check-btn {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      margin-top: 1px;
+      border-radius: 8px;
+      border: 2px solid #CFC5B8;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+
+    .item-card.is-done .check-btn {
+      background: var(--done);
+      border-color: var(--done);
+    }
+
+    .item-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .item-name {
+      font-size: 0.96rem;
+      font-weight: 600;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .item-card.is-done .item-name {
+      text-decoration: line-through;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 600;
+      background: var(--surface-soft);
+      color: var(--text-muted);
+    }
+
+    .tag.priority-high {
+      background: #FDECE7;
+      color: #C85A32;
+    }
+
+    .item-meta {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .item-memo {
+      color: #5F564D;
+    }
+
+    .item-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .item-link:hover { text-decoration: underline; }
+
+    .item-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+
+    .icon-btn.del:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 16px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 26, 22, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 22px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      background: #fff;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    /* Tabs inside Sync Modal */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--surface-soft);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .guide-box {
+      background: var(--surface-soft);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.8rem;
+      color: #4F473F;
+      margin-top: 12px;
+    }
+
+    .guide-box summary {
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .guide-box ol {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .guide-box li {
+      margin-bottom: 5px;
+    }
+
+    .guide-box code {
+      background: rgba(0,0,0,0.06);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.76rem;
+    }
+
+    .sync-status-box {
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      margin-bottom: 12px;
+      background: var(--surface-soft);
+    }
+
+    .sync-status-box.ok {
+      background: var(--done-soft);
+      color: #2E6451;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(90px);
+      background: #2F2A25;
+      color: #fff;
+      padding: 11px 16px;
+      border-radius: 14px;
+      font-size: 0.86rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+      transition: transform 0.25s ease;
+      z-index: 200;
+      max-width: calc(100vw - 32px);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-undo {
+      border: none;
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFD3B6;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 14px 12px; }
+      .header-card { padding: 16px; }
+      .title-area h1 { font-size: 1.2rem; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header-card">
+      <div class="header-top">
+        <div class="title-area">
+          <h1 id="appTitle" title="클릭해서 태명/예정일 설정">👶 우리 아기 출산 준비</h1>
+          <div class="subtitle">
+            <span id="ddayBadge" class="dday-badge" title="출산 예정일 설정">예정일 설정하기</span>
+            <span id="lastUpdatedText"></span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <div class="role-toggle" title="현재 사용자 선택">
+            <button type="button" class="role-btn" data-role="아빠">아빠</button>
+            <button type="button" class="role-btn" data-role="엄마">엄마</button>
+          </div>
+          <button type="button" class="sync-pill" id="openSyncBtn">
+            <span class="sync-dot" id="syncDot"></span>
+            <span id="syncLabel">동기화 설정</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span>준비 진행률</span>
+          <span class="progress-percent" id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-label">전체</div>
+            <div class="stat-val" id="statTotal">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">준비할 것</div>
+            <div class="stat-val todo" id="statTodo">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">있는 것</div>
+            <div class="stat-val done" id="statDone">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Add -->
+    <div class="add-card">
+      <form class="quick-add-form" id="quickAddForm">
+        <input type="text" id="quickName" placeholder="필요한 육아용품을 입력하고 Enter..." autocomplete="off" />
+        <button type="submit" class="btn btn-primary">추가</button>
+      </form>
+      <div class="quick-options">
+        <select id="quickCategory">
+          <option value="수유">🍼 수유</option>
+          <option value="수면/공간">🛏️ 수면/공간</option>
+          <option value="위생/건강">🧼 위생/건강</option>
+          <option value="의류/패브릭">👕 의류/패브릭</option>
+          <option value="놀이/발달">🧸 놀이/발달</option>
+          <option value="외출/기타">🎒 외출/기타</option>
+        </select>
+        <label>
+          <input type="checkbox" id="quickAlreadyHave" />
+          이미 있는 것으로 추가
+        </label>
+      </div>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="controls">
+      <div class="search-row">
+        <input type="search" class="search-input" id="searchInput" placeholder="🔍 품목명, 메모 검색..." />
+      </div>
+      <div class="pill-row" id="statusFilterRow">
+        <button type="button" class="pill active" data-status="all">전체 보기</button>
+        <button type="button" class="pill" data-status="todo">준비할 것만</button>
+        <button type="button" class="pill" data-status="done">있는 것만</button>
+      </div>
+      <div class="pill-row" id="categoryFilterRow"></div>
+    </div>
+
+    <!-- Lists -->
+    <div id="listsContainer"></div>
+  </div>
+
+  <!-- Edit Item Modal -->
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">품목 상세 수정</h2>
+        <button type="button" class="icon-btn" onclick="closeModal('editModal')">✕</button>
+      </div>
+      <form id="editForm">
+        <input type="hidden" id="editId" />
+        <div class="form-group">
+          <label for="editName">품목명</label>
+          <input type="text" id="editName" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCategory">카테고리</label>
+            <select id="editCategory">
+              <option value="수유">🍼 수유</option>
+              <option value="수면/공간">🛏️ 수면/공간</option>
+              <option value="위생/건강">🧼 위생/건강</option>
+              <option value="의류/패브릭">👕 의류/패브릭</option>
+              <option value="놀이/발달">🧸 놀이/발달</option>
+              <option value="외출/기타">🎒 외출/기타</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editPriority">중요도</label>
+            <select id="editPriority">
+              <option value="normal">보통</option>
+              <option value="high">필수</option>
+              <option value="low">고민중</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editStatus">상태</label>
+            <select id="editStatus">
+              <option value="todo">준비할 것</option>
+              <option value="done">있는 것 (준비 완료)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editPrice">예상/구매 가격 (원)</label>
+            <input type="text" id="editPrice" placeholder="예: 55,000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="editMemo">메모 (브랜드, 수량, 당근 여부 등)</label>
+          <textarea id="editMemo" rows="2" placeholder="예: 당근마켓 확인, 선물 예정 등"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="editUrl">구매/참고 링크 (선택)</label>
+          <input type="url" id="editUrl" placeholder="https://..." />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="editDeleteBtn">삭제</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">취소</button>
+          <button type="submit" class="btn btn-primary">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Profile / D-Day Modal -->
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">아기 정보 설정</h2>
+        <button type="button" class="icon-btn" onclick="closeModal('profileModal')">✕</button>
+      </div>
+      <form id="profileForm">
+        <div class="form-group">
+          <label for="babyNameInput">제목 / 태명</label>
+          <input type="text" id="babyNameInput" placeholder="예: 우리 아기 출산 준비" />
+        </div>
+        <div class="form-group">
+          <label for="dueDateInput">출산 예정일</label>
+          <input type="date" id="dueDateInput" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('profileModal')">취소</button>
+          <button type="submit" class="btn btn-primary">저장</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sync Modal -->
+  <div class="modal-backdrop" id="syncModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">💑 부부 실시간 동기화</h2>
+        <button type="button" class="icon-btn" onclick="closeModal('syncModal')">✕</button>
+      </div>
+
+      <div class="tabs">
+        <button type="button" class="tab-btn active" data-tab="realtime">실시간 자동 연동</button>
+        <button type="button" class="tab-btn" data-tab="manual">카톡 간편 공유 / 백업</button>
+      </div>
+
+      <!-- Tab 1: Realtime Firebase -->
+      <div id="tab-realtime">
+        <div class="sync-status-box" id="syncStatusDetail">
+          현재 <b>이 기기(로컬)</b>에만 저장되고 있습니다. 아래에 Firebase 주소를 연결하면 남편과 와이프가 변경하는 내용이 실시간으로 함께 반영됩니다.
+        </div>
+
+        <form id="syncConfigForm">
+          <div class="form-group">
+            <label for="fbUrlInput">Firebase Realtime Database URL</label>
+            <input type="url" id="fbUrlInput" placeholder="https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app" />
+          </div>
+          <div class="form-group">
+            <label for="roomCodeInput">우리 부부 방 코드 (영문/숫자, 비밀 코드처럼 사용)</label>
+            <input type="text" id="roomCodeInput" placeholder="예: baby-2026-ourhome" />
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-done" style="flex:1;">실시간 연동 시작</button>
+            <button type="button" class="btn btn-secondary" id="disconnectSyncBtn" style="display:none;">연동 해제</button>
+          </div>
+        </form>
+
+        <div id="shareSyncBox" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+          <div style="font-size:0.82rem; font-weight:600; margin-bottom:8px;">와이프에게 연결 정보 보내기</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary btn-sm" id="copyShareLinkBtn">공유 링크 복사</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="copySyncTokenBtn">연결 코드 복사</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="forcePullBtn">서버에서 다시 불러오기</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);">
+          <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:5px;">
+            배우자에게 받은 연결 코드가 있나요?
+          </label>
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="pasteTokenInput" placeholder="연결 코드 붙여넣기..." style="flex:1; border:1px solid var(--border); border-radius:9px; padding:7px 10px; font-size:0.82rem; background:var(--bg);" />
+            <button type="button" class="btn btn-secondary btn-sm" id="applyTokenBtn">적용</button>
+          </div>
+        </div>
+
+        <details class="guide-box">
+          <summary>📖 3분 무료 실시간 연동 설정 방법 (Firebase)</summary>
+          <ol>
+            <li><a href="https://console.firebase.google.com" target="_blank" rel="noopener">Firebase 콘솔</a>에서 구글 로그인 후 <b>프로젝트 추가</b> (무료 Spark 요금제).</li>
+            <li>왼쪽 메뉴 <b>빌드 → Realtime Database → 데이터베이스 만들기</b> 클릭.</li>
+            <li>위치는 <b>싱가포르(asia-southeast1)</b> 선택 후 <b>테스트 모드</b>로 시작.</li>
+            <li>생성된 상단 주소(<code>https://...firebasedatabase.app</code>)를 복사해 위 칸에 붙여넣기!</li>
+            <li><b>방 코드</b>에 두 사람만 아는 코드를 적고 <b>실시간 연동 시작</b>을 누르면 끝!</li>
+            <li>와이프 폰에는 <b>연결 코드 복사</b>해서 카톡으로 보내고 붙여넣기만 하면 바로 동기화됩니다.</li>
+          </ol>
+        </details>
+      </div>
+
+      <!-- Tab 2: Manual Share / Backup -->
+      <div id="tab-manual" style="display:none;">
+        <p style="font-size:0.82rem; color:var(--text-muted); margin-top:0;">
+          서버 설정 없이 현재 체크리스트 전체를 코드로 복사해 카톡으로 주고받거나 파일로 백업할 수 있습니다.
+        </p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+          <button type="button" class="btn btn-primary btn-sm" id="copySnapshotBtn">현재 리스트 코드 복사</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="downloadJsonBtn">JSON 백업 저장</button>
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
+            JSON 불러오기
+            <input type="file" id="uploadJsonInput" accept=".json" style="display:none;" />
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="importCodeArea">받은 리스트 코드 붙여넣기</label>
+          <textarea id="importCodeArea" rows="3" placeholder="카톡으로 받은 코드를 여기에 붙여넣고 적용을 누르세요."></textarea>
+        </div>
+        <button type="button" class="btn btn-done btn-sm" id="applySnapshotBtn">코드로 리스트 덮어쓰기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span id="toastMsg"></span>
+    <button type="button" class="toast-undo" id="toastUndoBtn" style="display:none;">실행 취소</button>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'baby_prep_state_v1';
+    const SYNC_CFG_KEY = 'baby_prep_sync_cfg_v1';
+    const ROLE_KEY = 'baby_prep_role_v1';
+    const CLIENT_ID = 'c_' + Math.random().toString(36).slice(2, 10);
+
+    const CATEGORIES = ['전체', '수유', '수면/공간', '위생/건강', '의류/패브릭', '놀이/발달', '외출/기타'];
+    const CATEGORY_EMOJI = {
+      '수유': '🍼',
+      '수면/공간': '🛏️',
+      '위생/건강': '🧼',
+      '의류/패브릭': '👕',
+      '놀이/발달': '🧸',
+      '외출/기타': '🎒'
+    };
+
+    const INITIAL_ITEMS = [
+      // <준비할 것>
+      { id: 'init_1',  name: '브라운체온계', category: '위생/건강', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_2',  name: '보르르 분유포트', category: '수유', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_3',  name: '젖병', category: '수유', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_4',  name: '쪽쪽이', category: '수유', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_5',  name: '매직캔휴지통', category: '위생/건강', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_6',  name: '아기 바닥에 눞히는 쿠션? 매트? 같은거/원형러그130cm', category: '수면/공간', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_7',  name: '역방쿠', category: '수면/공간', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_8',  name: '아기침대', category: '수면/공간', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_9',  name: '기갈대', category: '위생/건강', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_10', name: '아기수전', category: '위생/건강', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_11', name: '백색소음기 + 꼬꼬맘', category: '수면/공간', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_12', name: '아기체육관', category: '놀이/발달', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_13', name: '타이니모빌', category: '놀이/발달', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_14', name: '밤부베베 손수건', category: '의류/패브릭', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_15', name: '신생아 손톱깎이 세트', category: '위생/건강', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_16', name: '네일트리머(말랑하니)', category: '위생/건강', done: false, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_17', name: '젖병소독기', category: '수유', done: false, priority: 'high', memo: '', price: '', url: '', updatedBy: '' },
+
+      // <있는 것>
+      { id: 'init_18', name: '속싸개 블랭킷', category: '의류/패브릭', done: true, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_19', name: '배넷저고리, 신생아 모자, 딸랑이 말 인형', category: '의류/패브릭', done: true, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_20', name: '태열베개', category: '수면/공간', done: true, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_21', name: '수유쿠션', category: '수유', done: true, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' },
+      { id: 'init_22', name: '수유시트', category: '수유', done: true, priority: 'normal', memo: '', price: '', url: '', updatedBy: '' }
+    ];
+
+    let state = loadState();
+    let syncConfig = loadSyncConfig();
+    let currentRole = localStorage.getItem(ROLE_KEY) || '아빠';
+    let filterStatus = 'all';
+    let filterCategory = '전체';
+    let searchQuery = '';
+    let lastSnapshotForUndo = null;
+    let toastTimer = null;
+
+    // Realtime Sync internals
+    let eventSource = null;
+    let pollTimer = null;
+    let pushDebounce = null;
+    let syncStatus = 'local'; // local | syncing | connected | error
+
+    function defaultState() {
+      return {
+        title: '우리 아기 출산 준비',
+        dueDate: '',
+        items: INITIAL_ITEMS.map((item, idx) => ({ ...item, order: idx })),
+        updatedAt: Date.now(),
+        lastClientId: CLIENT_ID
+      };
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return defaultState();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed.items)) return defaultState();
+        return parsed;
+      } catch {
+        return defaultState();
+      }
+    }
+
+    function saveStateLocally() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadSyncConfig() {
+      try {
+        const raw = localStorage.getItem(SYNC_CFG_KEY);
+        return raw ? JSON.parse(raw) : { dbUrl: '', roomCode: '' };
+      } catch {
+        return { dbUrl: '', roomCode: '' };
+      }
+    }
+
+    function saveSyncConfig() {
+      localStorage.setItem(SYNC_CFG_KEY, JSON.stringify(syncConfig));
+    }
+
+    function mutateState(mutator, undoMessage = null) {
+      if (undoMessage) {
+        lastSnapshotForUndo = JSON.parse(JSON.stringify(state));
+      }
+      mutator();
+      state.updatedAt = Date.now();
+      state.lastClientId = CLIENT_ID;
+      saveStateLocally();
+      render();
+      scheduleRemotePush();
+      if (undoMessage) {
+        showToast(undoMessage, true);
+      }
+    }
+
+    // ---------- Rendering ----------
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatTime(ts) {
+      if (!ts) return '';
+      const d = new Date(ts);
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function renderHeader() {
+      document.getElementById('appTitle').textContent = '👶 ' + (state.title || '우리 아기 출산 준비');
+      document.title = state.title || '우리 아기 출산 준비';
+
+      const ddayEl = document.getElementById('ddayBadge');
+      if (state.dueDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const due = new Date(state.dueDate + 'T00:00:00');
+        const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+        if (diff > 0) ddayEl.textContent = `출산까지 D-${diff}`;
+        else if (diff === 0) ddayEl.textContent = `🎉 출산 예정일 D-Day!`;
+        else ddayEl.textContent = `탄생 D+${Math.abs(diff)}`;
+      } else {
+        ddayEl.textContent = '예정일 설정하기';
+      }
+
+      document.getElementById('lastUpdatedText').textContent =
+        state.updatedAt ? `최근 수정 ${formatTime(state.updatedAt)}` : '';
+
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.role === currentRole);
+      });
+
+      const total = state.items.length;
+      const done = state.items.filter(i => i.done).length;
+      const todo = total - done;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('progressPercent').textContent = `${pct}% (${done}/${total})`;
+      document.getElementById('progressFill').style.width = `${pct}%`;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statTodo').textContent = todo;
+      document.getElementById('statDone').textContent = done;
+
+      renderSyncIndicator();
+    }
+
+    function renderSyncIndicator() {
+      const dot = document.getElementById('syncDot');
+      const label = document.getElementById('syncLabel');
+      const detail = document.getElementById('syncStatusDetail');
+      const disconnectBtn = document.getElementById('disconnectSyncBtn');
+      const shareBox = document.getElementById('shareSyncBox');
+
+      dot.className = 'sync-dot';
+      if (syncStatus === 'connected') {
+        dot.classList.add('connected');
+        label.textContent = '실시간 연동됨';
+        detail.className = 'sync-status-box ok';
+        detail.innerHTML = `✅ <b>실시간 동기화 연결됨</b> (방 코드: <code>${escapeHtml(syncConfig.roomCode)}</code>)<br/>남편/와이프가 체크하거나 추가하면 몇 초 안에 자동 반영됩니다.`;
+        disconnectBtn.style.display = 'inline-block';
+        shareBox.style.display = 'block';
+      } else if (syncStatus === 'syncing') {
+        dot.classList.add('syncing');
+        label.textContent = '동기화 중...';
+        disconnectBtn.style.display = 'inline-block';
+        shareBox.style.display = 'block';
+      } else if (syncStatus === 'error') {
+        dot.classList.add('error');
+        label.textContent = '연동 오류';
+        detail.className = 'sync-status-box';
+        detail.innerHTML = `⚠️ <b>연결에 실패했습니다.</b> Firebase URL과 데이터베이스 규칙(읽기/쓰기 허용)을 확인해 주세요.`;
+        disconnectBtn.style.display = 'inline-block';
+        shareBox.style.display = 'none';
+      } else {
+        label.textContent = '동기화 설정';
+        detail.className = 'sync-status-box';
+        detail.innerHTML = `현재 <b>이 기기(로컬)</b>에만 저장되고 있습니다. 아래에 Firebase 주소를 연결하면 남편과 와이프가 변경하는 내용이 실시간으로 함께 반영됩니다.`;
+        disconnectBtn.style.display = 'none';
+        shareBox.style.display = 'none';
+      }
+    }
+
+    function renderCategoryFilters() {
+      const row = document.getElementById('categoryFilterRow');
+      row.innerHTML = CATEGORIES.map(cat => {
+        const count = cat === '전체'
+          ? state.items.length
+          : state.items.filter(i => i.category === cat).length;
+        const emoji = CATEGORY_EMOJI[cat] ? CATEGORY_EMOJI[cat] + ' ' : '';
+        return `<button type="button" class="pill ${filterCategory === cat ? 'active' : ''}" data-cat="${escapeHtml(cat)}">${emoji}${escapeHtml(cat)} (${count})</button>`;
+      }).join('');
+    }
+
+    function renderLists() {
+      const container = document.getElementById('listsContainer');
+      const q = searchQuery.trim().toLowerCase();
+
+      const filtered = state.items.filter(item => {
+        if (filterCategory !== '전체' && item.category !== filterCategory) return false;
+        if (q) {
+          const hay = `${item.name} ${item.memo || ''} ${item.category || ''}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const todoItems = filtered.filter(i => !i.done);
+      const doneItems = filtered.filter(i => i.done);
+
+      let html = '';
+
+      if (filterStatus === 'all' || filterStatus === 'todo') {
+        html += `
+          <div class="section-header">
+            <div class="section-title">
+              🛒 준비할 것 <span class="count-badge todo">${todoItems.length}</span>
+            </div>
+          </div>
+          <div class="item-list">
+            ${todoItems.length ? todoItems.map(renderItemCard).join('') : '<div class="empty-state">준비할 항목이 없습니다 🎉</div>'}
+          </div>
+        `;
+      }
+
+      if (filterStatus === 'all' || filterStatus === 'done') {
+        html += `
+          <div class="section-header">
+            <div class="section-title">
+              ✅ 있는 것 (준비 완료) <span class="count-badge done">${doneItems.length}</span>
+            </div>
+          </div>
+          <div class="item-list">
+            ${doneItems.length ? doneItems.map(renderItemCard).join('') : '<div class="empty-state">아직 준비 완료된 항목이 없습니다.</div>'}
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderItemCard(item) {
+      const emoji = CATEGORY_EMOJI[item.category] || '📦';
+      const priorityTag = item.priority === 'high'
+        ? '<span class="tag priority-high">필수</span>'
+        : (item.priority === 'low' ? '<span class="tag">고민중</span>' : '');
+
+      const metaParts = [];
+      if (item.price) metaParts.push(`💰 ${escapeHtml(item.price)}원`);
+      if (item.memo) metaParts.push(`<span class="item-memo">📝 ${escapeHtml(item.memo)}</span>`);
+      if (item.url) metaParts.push(`<a class="item-link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">🔗 링크</a>`);
+      if (item.updatedBy) metaParts.push(`<span>· ${escapeHtml(item.updatedBy)}</span>`);
+
+      return `
+        <div class="item-card ${item.done ? 'is-done' : ''}" data-id="${escapeHtml(item.id)}">
+          <button type="button" class="check-btn" data-action="toggle" aria-label="상태 변경">${item.done ? '✓' : ''}</button>
+          <div class="item-body">
+            <div class="item-name-row">
+              <span class="item-name">${escapeHtml(item.name)}</span>
+              <span class="tag">${emoji} ${escapeHtml(item.category || '외출/기타')}</span>
+              ${priorityTag}
+            </div>
+            ${metaParts.length ? `<div class="item-meta">${metaParts.join(' ')}</div>` : ''}
+          </div>
+          <div class="item-actions">
+            <button type="button" class="icon-btn" data-action="edit" title="수정">✏️</button>
+            <button type="button" class="icon-btn del" data-action="delete" title="삭제">🗑️</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      renderHeader();
+      renderCategoryFilters();
+      renderLists();
+    }
+
+    // ---------- Item Actions ----------
+    function addItem(name, category, alreadyHave) {
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      const newItem = {
+        id: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        name: trimmed,
+        category: category || '외출/기타',
+        done: Boolean(alreadyHave),
+        priority: 'normal',
+        memo: '',
+        price: '',
+        url: '',
+        updatedBy: `${currentRole} 추가`
+      };
+      mutateState(() => {
+        state.items.unshift(newItem);
+      });
+      showToast(`"${trimmed}" 추가됨`);
+    }
+
+    function toggleItem(id) {
+      const target = state.items.find(i => i.id === id);
+      if (!target) return;
+      const nextDone = !target.done;
+      mutateState(() => {
+        target.done = nextDone;
+        target.updatedBy = `${currentRole} ${nextDone ? '완료' : '준비중'}`;
+      }, nextDone ? `"${target.name}" → 있는 것으로 이동` : `"${target.name}" → 준비할 것으로 이동`);
+    }
+
+    function deleteItem(id) {
+      const target = state.items.find(i => i.id === id);
+      if (!target) return;
+      mutateState(() => {
+        state.items = state.items.filter(i => i.id !== id);
+      }, `"${target.name}" 삭제됨`);
+    }
+
+    function openEditModal(id) {
+      const item = state.items.find(i => i.id === id);
+      if (!item) return;
+      document.getElementById('editId').value = item.id;
+      document.getElementById('editName').value = item.name;
+      document.getElementById('editCategory').value = item.category || '외출/기타';
+      document.getElementById('editPriority').value = item.priority || 'normal';
+      document.getElementById('editStatus').value = item.done ? 'done' : 'todo';
+      document.getElementById('editPrice').value = item.price || '';
+      document.getElementById('editMemo').value = item.memo || '';
+      document.getElementById('editUrl').value = item.url || '';
+      openModal('editModal');
+    }
+
+    // ---------- Modals & Toast ----------
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function showToast(msg, allowUndo = false) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      document.getElementById('toastUndoBtn').style.display = allowUndo ? 'inline-block' : 'none';
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+    }
+
+    // ---------- Firebase Realtime Database Sync ----------
+    function normalizeDbUrl(url) {
+      return url.trim().replace(/\/+$/, '');
+    }
+
+    function getRoomEndpoint() {
+      if (!syncConfig.dbUrl || !syncConfig.roomCode) return null;
+      const safeRoom = encodeURIComponent(syncConfig.roomCode.trim());
+      return `${normalizeDbUrl(syncConfig.dbUrl)}/baby_prep_rooms/${safeRoom}.json`;
+    }
+
+    async function pushToRemote() {
+      const endpoint = getRoomEndpoint();
+      if (!endpoint) return;
+      try {
+        syncStatus = 'syncing';
+        renderSyncIndicator();
+        const res = await fetch(endpoint, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state)
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        syncStatus = 'connected';
+        renderSyncIndicator();
+      } catch (err) {
+        console.error('Sync push error:', err);
+        syncStatus = 'error';
+        renderSyncIndicator();
+      }
+    }
+
+    function scheduleRemotePush() {
+      if (!getRoomEndpoint()) return;
+      clearTimeout(pushDebounce);
+      pushDebounce = setTimeout(pushToRemote, 300);
+    }
+
+    function applyRemoteData(remoteData) {
+      if (!remoteData || !Array.isArray(remoteData.items)) return false;
+      if (remoteData.lastClientId === CLIENT_ID && remoteData.updatedAt === state.updatedAt) {
+        return false;
+      }
+      if ((remoteData.updatedAt || 0) >= (state.updatedAt || 0)) {
+        state = remoteData;
+        saveStateLocally();
+        render();
+        return true;
+      }
+      return false;
+    }
+
+    async function pullFromRemote(forceOverwrite = false) {
+      const endpoint = getRoomEndpoint();
+      if (!endpoint) return null;
+      const res = await fetch(endpoint, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (data && Array.isArray(data.items)) {
+        if (forceOverwrite || (data.updatedAt || 0) > (state.updatedAt || 0)) {
+          state = data;
+          saveStateLocally();
+          render();
+          return 'pulled';
+        }
+        return 'local_newer';
+      }
+      return 'empty';
+    }
+
+    function stopRealtimeSync() {
+      if (eventSource) {
+        eventSource.close();
+        eventSource = null;
+      }
+      if (pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+      }
+    }
+
+    async function startRealtimeSync(isInitialConnect = false) {
+      stopRealtimeSync();
+      const endpoint = getRoomEndpoint();
+      if (!endpoint) {
+        syncStatus = 'local';
+        renderSyncIndicator();
+        return;
+      }
+
+      syncStatus = 'syncing';
+      renderSyncIndicator();
+
+      try {
+        const result = await pullFromRemote(false);
+        if (result === 'empty') {
+          await pushToRemote();
+          if (isInitialConnect) showToast('새 방을 만들고 현재 리스트를 업로드했어요!');
+        } else if (result === 'pulled') {
+          if (isInitialConnect) showToast('공유된 최신 리스트를 불러왔어요!');
+        } else if (result === 'local_newer' && isInitialConnect) {
+          await pushToRemote();
+          showToast('실시간 연동이 연결되었어요!');
+        }
+
+        // Start SSE stream for instant updates
+        try {
+          eventSource = new EventSource(endpoint);
+          eventSource.addEventListener('put', (e) => {
+            try {
+              const payload = JSON.parse(e.data);
+              if (payload && payload.path === '/' && payload.data) {
+                const updated = applyRemoteData(payload.data);
+                if (updated) showToast('🔄 배우자의 변경사항이 반영되었어요');
+              } else if (payload && payload.path && payload.path !== '/') {
+                pullFromRemote(false).catch(() => {});
+              }
+            } catch {}
+          });
+          eventSource.onopen = () => {
+            syncStatus = 'connected';
+            renderSyncIndicator();
+          };
+          eventSource.onerror = () => {
+            // Polling fallback will keep syncing even if SSE drops on mobile
+          };
+        } catch {}
+
+        // Gentle fallback polling every 8 seconds while tab is visible
+        pollTimer = setInterval(() => {
+          if (document.visibilityState === 'visible') {
+            pullFromRemote(false)
+              .then(r => {
+                if (r === 'pulled') showToast('🔄 변경사항이 동기화되었어요');
+                if (syncStatus !== 'connected') {
+                  syncStatus = 'connected';
+                  renderSyncIndicator();
+                }
+              })
+              .catch(() => {});
+          }
+        }, 8000);
+
+        syncStatus = 'connected';
+        renderSyncIndicator();
+      } catch (err) {
+        console.error('Sync connect error:', err);
+        syncStatus = 'error';
+        renderSyncIndicator();
+        if (isInitialConnect) showToast('연결 실패: Firebase URL과 규칙을 확인해주세요');
+      }
+    }
+
+    // Encode/Decode helpers (UTF-8 safe Base64)
+    function encodeObj(obj) {
+      const json = JSON.stringify(obj);
+      const bytes = new TextEncoder().encode(json);
+      let bin = '';
+      bytes.forEach(b => bin += String.fromCharCode(b));
+      return btoa(bin);
+    }
+
+    function decodeObj(str) {
+      const bin = atob(str.trim());
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const json = new TextDecoder().decode(bytes);
+      return JSON.parse(json);
+    }
+
+    async function copyText(text, successMsg) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(successMsg);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast(successMsg);
+      }
+    }
+
+    function checkUrlHashSync() {
+      const hash = window.location.hash || '';
+      if (hash.startsWith('#sync=')) {
+        try {
+          const token = decodeURIComponent(hash.slice(6));
+          const cfg = decodeObj(token);
+          if (cfg.dbUrl && cfg.roomCode) {
+            syncConfig = { dbUrl: normalizeDbUrl(cfg.dbUrl), roomCode: cfg.roomCode.trim() };
+            saveSyncConfig();
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
+        } catch {}
+      }
+    }
+
+    // ---------- Event Listeners ----------
+    document.getElementById('quickAddForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('quickName');
+      const cat = document.getElementById('quickCategory').value;
+      const alreadyHave = document.getElementById('quickAlreadyHave').checked;
+      addItem(input.value, cat, alreadyHave);
+      input.value = '';
+      input.focus();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderLists();
+    });
+
+    document.getElementById('statusFilterRow').addEventListener('click', (e) => {
+      const btn = e.target.closest('.pill');
+      if (!btn) return;
+      filterStatus = btn.dataset.status;
+      document.querySelectorAll('#statusFilterRow .pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      renderLists();
+    });
+
+    document.getElementById('categoryFilterRow').addEventListener('click', (e) => {
+      const btn = e.target.closest('.pill');
+      if (!btn) return;
+      filterCategory = btn.dataset.cat;
+      renderCategoryFilters();
+      renderLists();
+    });
+
+    document.getElementById('listsContainer').addEventListener('click', (e) => {
+      const actionBtn = e.target.closest('[data-action]');
+      if (!actionBtn) return;
+      const card = actionBtn.closest('.item-card');
+      if (!card) return;
+      const id = card.dataset.id;
+      const action = actionBtn.dataset.action;
+      if (action === 'toggle') toggleItem(id);
+      else if (action === 'edit') openEditModal(id);
+      else if (action === 'delete') deleteItem(id);
+    });
+
+    document.querySelectorAll('.role-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentRole = btn.dataset.role;
+        localStorage.setItem(ROLE_KEY, currentRole);
+        renderHeader();
+        showToast(`${currentRole} 모드로 전환했어요`);
+      });
+    });
+
+    // Edit form
+    document.getElementById('editForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editId').value;
+      const item = state.items.find(i => i.id === id);
+      if (!item) return;
+      mutateState(() => {
+        item.name = document.getElementById('editName').value.trim() || item.name;
+        item.category = document.getElementById('editCategory').value;
+        item.priority = document.getElementById('editPriority').value;
+        item.done = document.getElementById('editStatus').value === 'done';
+        item.price = document.getElementById('editPrice').value.trim();
+        item.memo = document.getElementById('editMemo').value.trim();
+        item.url = document.getElementById('editUrl').value.trim();
+        item.updatedBy = `${currentRole} 수정`;
+      });
+      closeModal('editModal');
+      showToast('수정 내용이 저장되었어요');
+    });
+
+    document.getElementById('editDeleteBtn').addEventListener('click', () => {
+      const id = document.getElementById('editId').value;
+      closeModal('editModal');
+      deleteItem(id);
+    });
+
+    // Profile modal
+    const openProfile = () => {
+      document.getElementById('babyNameInput').value = state.title || '';
+      document.getElementById('dueDateInput').value = state.dueDate || '';
+      openModal('profileModal');
+    };
+    document.getElementById('appTitle').addEventListener('click', openProfile);
+    document.getElementById('ddayBadge').addEventListener('click', openProfile);
+
+    document.getElementById('profileForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      mutateState(() => {
+        state.title = document.getElementById('babyNameInput').value.trim() || '우리 아기 출산 준비';
+        state.dueDate = document.getElementById('dueDateInput').value;
+      });
+      closeModal('profileModal');
+      showToast('아기 정보가 저장되었어요');
+    });
+
+    // Sync modal
+    document.getElementById('openSyncBtn').addEventListener('click', () => {
+      document.getElementById('fbUrlInput').value = syncConfig.dbUrl || '';
+      document.getElementById('roomCodeInput').value = syncConfig.roomCode || '';
+      renderSyncIndicator();
+      openModal('syncModal');
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.dataset.tab;
+        document.getElementById('tab-realtime').style.display = tab === 'realtime' ? 'block' : 'none';
+        document.getElementById('tab-manual').style.display = tab === 'manual' ? 'block' : 'none';
+      });
+    });
+
+    document.getElementById('syncConfigForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const dbUrl = normalizeDbUrl(document.getElementById('fbUrlInput').value);
+      const roomCode = document.getElementById('roomCodeInput').value.trim();
+      if (!dbUrl || !roomCode) {
+        showToast('Firebase URL과 방 코드를 모두 입력해 주세요');
+        return;
+      }
+      syncConfig = { dbUrl, roomCode };
+      saveSyncConfig();
+      startRealtimeSync(true);
+    });
+
+    document.getElementById('disconnectSyncBtn').addEventListener('click', () => {
+      stopRealtimeSync();
+      syncConfig = { dbUrl: '', roomCode: '' };
+      saveSyncConfig();
+      syncStatus = 'local';
+      document.getElementById('fbUrlInput').value = '';
+      document.getElementById('roomCodeInput').value = '';
+      renderSyncIndicator();
+      showToast('실시간 연동이 해제되었어요');
+    });
+
+    document.getElementById('copySyncTokenBtn').addEventListener('click', () => {
+      const token = encodeObj(syncConfig);
+      copyText(token, '연결 코드가 복사되었어요! 카톡으로 보내주세요.');
+    });
+
+    document.getElementById('copyShareLinkBtn').addEventListener('click', () => {
+      const token = encodeObj(syncConfig);
+      const base = window.location.href.split('#')[0];
+      const link = `${base}#sync=${encodeURIComponent(token)}`;
+      copyText(link, '공유 링크가 복사되었어요!');
+    });
+
+    document.getElementById('forcePullBtn').addEventListener('click', async () => {
+      try {
+        await pullFromRemote(true);
+        showToast('서버의 최신 리스트를 불러왔어요!');
+      } catch {
+        showToast('불러오기에 실패했어요');
+      }
+    });
+
+    document.getElementById('applyTokenBtn').addEventListener('click', () => {
+      const raw = document.getElementById('pasteTokenInput').value.trim();
+      if (!raw) return;
+      try {
+        const token = raw.includes('#sync=') ? decodeURIComponent(raw.split('#sync=')[1]) : raw;
+        const cfg = decodeObj(token);
+        if (!cfg.dbUrl || !cfg.roomCode) throw new Error();
+        syncConfig = { dbUrl: normalizeDbUrl(cfg.dbUrl), roomCode: cfg.roomCode.trim() };
+        saveSyncConfig();
+        document.getElementById('fbUrlInput').value = syncConfig.dbUrl;
+        document.getElementById('roomCodeInput').value = syncConfig.roomCode;
+        document.getElementById('pasteTokenInput').value = '';
+        startRealtimeSync(true);
+      } catch {
+        showToast('올바르지 않은 연결 코드입니다');
+      }
+    });
+
+    // Manual share / backup
+    document.getElementById('copySnapshotBtn').addEventListener('click', () => {
+      const code = encodeObj(state);
+      copyText(code, '현재 리스트 코드가 복사되었어요! 카톡으로 붙여넣어 보내세요.');
+    });
+
+    document.getElementById('applySnapshotBtn').addEventListener('click', () => {
+      const raw = document.getElementById('importCodeArea').value.trim();
+      if (!raw) return;
+      try {
+        const imported = decodeObj(raw);
+        if (!Array.isArray(imported.items)) throw new Error();
+        mutateState(() => {
+          state = imported;
+        }, '리스트를 불러왔어요');
+        document.getElementById('importCodeArea').value = '';
+        closeModal('syncModal');
+      } catch {
+        showToast('올바르지 않은 리스트 코드입니다');
+      }
+    });
+
+    document.getElementById('downloadJsonBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `baby-prep-list-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('JSON 백업 파일이 저장되었어요');
+    });
+
+    document.getElementById('uploadJsonInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(reader.result);
+          if (!Array.isArray(imported.items)) throw new Error();
+          mutateState(() => {
+            state = imported;
+          }, '백업 파일을 불러왔어요');
+          closeModal('syncModal');
+        } catch {
+          showToast('올바른 JSON 백업 파일이 아닙니다');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // Undo toast
+    document.getElementById('toastUndoBtn').addEventListener('click', () => {
+      if (!lastSnapshotForUndo) return;
+      state = lastSnapshotForUndo;
+      lastSnapshotForUndo = null;
+      state.updatedAt = Date.now();
+      state.lastClientId = CLIENT_ID;
+      saveStateLocally();
+      render();
+      scheduleRemotePush();
+      document.getElementById('toast').classList.remove('show');
+    });
+
+    // Close modals when clicking backdrop
+    document.querySelectorAll('.modal-backdrop').forEach(bg => {
+      bg.addEventListener('click', (e) => {
+        if (e.target === bg) bg.classList.remove('open');
+      });
+    });
+
+    // ---------- Boot ----------
+    checkUrlHashSync();
+    render();
+    if (syncConfig.dbUrl && syncConfig.roomCode) {
+      startRealtimeSync(false);
+    }
+  </script>
+</body>
+</html>
