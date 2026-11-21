@@ -1,0 +1,15 @@
+{
+  "name": "우리 아기 출산 준비 리스트",
+  "short_name": "출산 준비",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FDFBF7",
+  "theme_color": "#FDFBF7",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
