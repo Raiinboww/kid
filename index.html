@@ -1096,7 +1096,7 @@
         title: '우리 아기 출산 준비',
         dueDate: '',
         items: INITIAL_ITEMS.map((item, idx) => ({ ...item, order: idx })),
-        updatedAt: Date.now(),
+        updatedAt: 0,
         lastClientId: CLIENT_ID
       };
     }
@@ -1485,7 +1485,7 @@
       }
     }
 
-    async function startRealtimeSync(isInitialConnect = false) {
+    async function startRealtimeSync(isInitialConnect = false, preferRemote = false) {
       stopRealtimeSync();
       const endpoint = getRoomEndpoint();
       if (!endpoint) {
@@ -1498,8 +1498,9 @@
       renderSyncIndicator();
 
       try {
-        const result = await pullFromRemote(false);
+        const result = await pullFromRemote(preferRemote || state.updatedAt === 0);
         if (result === 'empty') {
+          if (state.updatedAt === 0) state.updatedAt = Date.now();
           await pushToRemote();
           if (isInitialConnect) showToast('새 방을 만들고 현재 리스트를 업로드했어요!');
         } else if (result === 'pulled') {
@@ -1532,7 +1533,7 @@
           };
         } catch {}
 
-        // Gentle fallback polling every 8 seconds while tab is visible
+        // Gentle fallback polling every 4 seconds while tab is visible
         pollTimer = setInterval(() => {
           if (document.visibilityState === 'visible') {
             pullFromRemote(false)
@@ -1545,7 +1546,7 @@
               })
               .catch(() => {});
           }
-        }, 8000);
+        }, 4000);
 
         syncStatus = 'connected';
         renderSyncIndicator();
@@ -1599,9 +1600,11 @@
             syncConfig = { dbUrl: normalizeDbUrl(cfg.dbUrl), roomCode: cfg.roomCode.trim() };
             saveSyncConfig();
             history.replaceState(null, '', window.location.pathname + window.location.search);
+            return true;
           }
         } catch {}
       }
+      return false;
     }
 
     // ---------- Event Listeners ----------
@@ -1778,7 +1781,8 @@
         document.getElementById('fbUrlInput').value = syncConfig.dbUrl;
         document.getElementById('roomCodeInput').value = syncConfig.roomCode;
         document.getElementById('pasteTokenInput').value = '';
-        startRealtimeSync(true);
+        startRealtimeSync(true, true);
+        closeModal('syncModal');
       } catch {
         showToast('올바르지 않은 연결 코드입니다');
       }
@@ -1857,11 +1861,29 @@
       });
     });
 
+    // Immediately sync when returning to the app on mobile (iOS Safari / Home Screen PWA)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && getRoomEndpoint()) {
+        pullFromRemote(false)
+          .then(r => { if (r === 'pulled') showToast('🔄 최신 리스트로 동기화되었어요'); })
+          .catch(() => {});
+        if (!eventSource || eventSource.readyState === EventSource.CLOSED) {
+          startRealtimeSync(false, false);
+        }
+      }
+    });
+
+    window.addEventListener('focus', () => {
+      if (getRoomEndpoint()) {
+        pullFromRemote(false).catch(() => {});
+      }
+    });
+
     // ---------- Boot ----------
-    checkUrlHashSync();
+    const connectedFromHash = checkUrlHashSync();
     render();
     if (syncConfig.dbUrl && syncConfig.roomCode) {
-      startRealtimeSync(false);
+      startRealtimeSync(connectedFromHash, connectedFromHash);
     }
   </script>
 </body>
